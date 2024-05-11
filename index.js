@@ -50,12 +50,23 @@ async function run() {
            res.send(result)
      })
 
+    //  get foodDetail info by using unique id
+
      app.get('/foods/:id', async(req, res)=>{
           const id = req.params.id;
            const query = {_id: new ObjectId(id)};
            const result = await foodCollection.findOne(query);
            res.send(result)
      })
+
+    //  get all foods added by a specific user;
+
+    app.get('/food/:email', async(req, res)=>{
+         const email = req.params.email;
+         const query = {donatorEmail: email};
+         const result = await foodCollection.find(query).toArray();
+         res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
