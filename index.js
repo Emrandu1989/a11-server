@@ -59,7 +59,17 @@ async function run() {
           const result = await requestedFoodCollection.find().toArray();
           res.send(result);
      })
-     
+
+    //  for requested food
+
+    app.get('/requestedFoods/:email', async(req, res)=>{
+         const email = req.params.email;
+         const query = {donatorEmail: email};
+         const result = await requestedFoodCollection.find(query).toArray();
+         res.send(result)
+
+    })
+
   
 
      app.get('/foods', async(req, res)=>{
