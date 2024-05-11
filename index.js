@@ -68,6 +68,9 @@ async function run() {
          res.send(result)
     })
 
+
+    // update food info 
+
     app.put('/food/:id', async(req, res)=>{
          const id = req.params.id;
          const foodData = req.body;
@@ -80,6 +83,15 @@ async function run() {
          }
          const result = await foodCollection.updateOne(query, updateDoc,option);
          res.send(result)
+    })
+
+    // delete a food data from db
+
+    app.delete('/food/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await foodCollection.deleteOne(query);
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
