@@ -157,8 +157,11 @@ async function run() {
     //  get all foods added by a specific user;
 
     app.get('/food/:email', logger, verifyToken, async(req, res)=>{
-        //  console.log('cook cookies', req.cookies)
-         const email = req.params.email;
+          console.log('token owner info', req.user)
+          if(req.user.email !== req.params.email){
+              return res.status(403).send({message: 'forbidden access'})
+          }
+          const email = req.params.email;
          const query = {donatorEmail: email};
          const result = await foodCollection.find(query).toArray();
          res.send(result)
