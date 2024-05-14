@@ -9,19 +9,14 @@ const port = process.env.PORT || 7000;
 
 
 
-const corsOptions = {
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
-  credentials: true,
-  optionSuccessStatus: 200,
 
-}
 app.use(cors(
   {
     origin: [
       'http://localhost:5173',
       'http://localhost:5174',
       "https://b9-a11-b91e3.web.app",
-      "https://b9-a11-b91e3.web.app"
+      "https://b9-a11-b91e3.firebaseapp.com"
     ],
     credentials: true,
     optionSuccessStatus: 200,
@@ -33,9 +28,9 @@ app.use(cookieParser())
 
 
 
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_pass}@cluster0.mzwb7mf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_pass}@cluster0.mzwb7mf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-const uri = "mongodb+srv://emrandu1989:Emran1989@cluster0.jwh8jyp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+// const uri = "mongodb+srv://emrandu1989:Emran1989@cluster0.jwh8jyp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 // const uri = "mongodb+srv://<username>:<password>@cluster0.mzwb7mf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -112,10 +107,7 @@ async function run() {
         .send({ success: true })
     })
 
-    // emrandu1989
-    // Emran1989
-
-    //  foods related api
+  
 
     app.post('/foods', async (req, res) => {
       const foodData = req.body;
@@ -140,7 +132,7 @@ async function run() {
 
     //  for requested food
 
-    app.get('/requestedFoods/:email', async (req, res) => {
+    app.get('/requestedFoods/:email', logger, verifyToken, async (req, res) => {
       const email = req.params.email;
       const query = { donatorEmail: email };
       const result = await requestedFoodCollection.find(query).toArray();
@@ -151,19 +143,23 @@ async function run() {
 
 
     app.get('/foods', async (req, res) => {
+ 
+
+     
       const result = await foodCollection.find().toArray();
       res.send(result)
     })
 
     //  get foodDetail info by using unique id
 
-    app.get('/foods/:id', async (req, res) => {
+    app.get('/foods/:id', logger, verifyToken, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await foodCollection.findOne(query);
       res.send(result)
     })
 
+   
     //  get all foods added by a specific user;
 
     app.get('/food/:email', logger, verifyToken, async (req, res) => {
@@ -180,7 +176,7 @@ async function run() {
 
     // update food info 
 
-    app.put('/food/:id', async (req, res) => {
+    app.put('/food/:id', logger, verifyToken, async (req, res) => {
       const id = req.params.id;
       const foodData = req.body;
       const query = { _id: new ObjectId(id) };
